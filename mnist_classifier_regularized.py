@@ -2,6 +2,8 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy as np
 import math
+import pickle    
+import os
 
 (X_train, label_train), (X_test, label_test) = tf.keras.datasets.fashion_mnist.load_data()
 
@@ -19,7 +21,7 @@ n_classes = 10
 #n = [n_x, 800, n_classes]
 n = [n_x, 3000, 2500, 2000, 1500, 1000, 500, n_classes]
 L = len(n)
-Wfilename = './Kien/mnist_classifier/fashion_mnist_trained_weights_deep.dat'
+weights_file = './Kien/mnist_classifier/fashion_mnist_trained_weights_deep.dat'
 
 def process_data(X, label):
     m = X.shape[0]
@@ -99,6 +101,7 @@ def split_batches(X, Y, batch_size):
     m = X.shape[1]
     assert(m == Y.shape[1])
     perm = list(np.random.permutation(m))
+
     shuffled_X = X[:, perm]
     shuffled_Y = Y[:, perm].reshape((n_classes, m))
     assert(shuffled_X.shape == X.shape)
@@ -160,10 +163,10 @@ def update_para_momentum(W, b, dW, db, VdW, Vdb, iter_idx, alpha, beta):
         b[l] -= alpha * V_upd 
     return W, b
 
-def gradient_descent(W, b, cur_epoch_num, n_iters = 2000, batch_size = 2**8, keep_prob = 1., lbd = 0., learning_rate = .002, beta1 = .9, beta2 = .999, decay_rate = 1.):
+def gradient_descent(W, b, n_iters = 2000, batch_size = 2**8, keep_prob = 1., lbd = 0., learning_rate = .002, beta1 = .9, beta2 = .999, decay_rate = 1.):
     VdW, Vdb = init_adam()
     SdW, Sdb = init_adam()
-    for epoch_num in range(cur_epoch_num, n_iters):
+    for epoch_num in range(n_iters):
         batches = split_batches(X_train, Y_train, batch_size)
         n_batches = len(batches)
         for batch_idx in range(n_batches):
@@ -177,8 +180,8 @@ def gradient_descent(W, b, cur_epoch_num, n_iters = 2000, batch_size = 2**8, kee
             #update_para_momentum(W, b, dW, db, VdW, Vdb, epoch_num, learning_rate, beta1)
             cur_learning_rate = learning_rate / math.sqrt(epoch_num + 1) / decay_rate
             update_para_adam(W, b, dW, db, VdW, Vdb, SdW, Sdb, iter_idx, cur_learning_rate, beta1, beta2)
-            Wfile = open(Wfilename, 'wb')
-            pickle.dump([W, b, epoch_num], Wfile)
+            Wfile = open(weights_file, 'wb')
+            pickle.dump([W, b], Wfile)
             Wfile.close()
 
 def set_performance(X, Y, W, b, batch_size = 2**8):
@@ -223,30 +226,26 @@ def demo_wrong(W, b, fashion = False):
             plt.show()
             break
 
-import pickle    
-import os
-
 def load_cache():
-    file_exists = os.path.isfile(Wfilename)
+    file_exists = os.path.isfile(weights_file)
     if (file_exists):
-        Wfile = open(Wfilename, 'rb')
+        Wfile = open(weights_file, 'rb')
         W, b = pickle.load(Wfile)
         Wfile.close()
     else:
         W = [None]
         b = [None]
-        cur_epoch_num = 0
         for l in range(1, L):
             W.append(np.random.randn(n[l], n[l - 1]) * np.sqrt(2. / n[l - 1]))
             b.append(np.zeros((n[l], 1)))
-        Wfile = open(Wfilename, 'wb')
+        Wfile = open(weights_file, 'wb')
         pickle.dump([W, b], Wfile)
         Wfile.close()
-    return W, b, cur_epoch_num
+    return W, b
 
-W, b, cur_epoch_num = load_cache()
+W, b = load_cache()
 
-gradient_descent(W, b, cur_epoch_num, keep_prob=.7, lbd = .01, learning_rate=.002)
+gradient_descent(W, b, keep_prob=.7, lbd = .01, learning_rate=.002)
 #print(set_performance(X_train, Y_train, W, b))
 #print(set_performance(X_test, Y_test, W, b))
 #demo_wrong(W, b, fashion = True)
