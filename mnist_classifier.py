@@ -33,61 +33,6 @@ def process_data(X, label):
 X_train, Y_train = process_data(X_train, label_train)
 X_test, Y_test = process_data(X_test, label_test)
 
-def relu(x):
-    return np.maximum(0, x)
-    
-def softmax(x):
-    t = np.exp(x - np.max(x, axis = 0).reshape((1, x.shape[1])))
-    return t / np.sum(t, axis = 0, keepdims = True)
-
-def forward_prop(X, W, b):
-    m = X.shape[1]
-    Z = [None]
-    A = [X]
-    for l in range(1, L):
-        Z.append(np.dot(W[l], A[l - 1]) + b[l])
-        if (l == L - 1): A.append(softmax(Z[l]))
-        else: A.append(relu(Z[l]))  
-        assert(Z[l].shape == (n[l], m))
-        assert(A[l].shape == Z[l].shape)
-    return Z, A
-
-def num_stable_prob(x, epsilon = 1e-18):
-    x = np.maximum(x, epsilon)
-    x = np.minimum(x, 1. - epsilon)
-    return x
-
-def cross_entropy_loss(Yhat, Y, lbd):
-    m = Y.shape[1]
-    assert(m == Yhat.shape[1])
-    num_stable_prob(Yhat)
-    res = -np.squeeze(np.sum(Y * np.log(Yhat))) / m
-    assert(res.shape == ())
-    for l in range(1, L): res += lbd * np.sum(np.square(W[l])) / m / 2.
-    return res
-
-def relu_der(x):
-    return np.int64(x > 0)
-
-def backward_prop(X, Y, W, b, Z, A, lbd):
-    dZ = [None] * L
-    dW = [None] * L
-    db = [None] * L
-    m = Y.shape[1]
-    assert(X.shape[1] == m)
-    for l in reversed(range(1, L)):
-        if (l == L - 1): dZ[l] = A[l] - Y
-        else:
-             dA_l = np.dot(W[l + 1].T, dZ[l + 1]) 
-             dZ[l] = dA_l * relu_der(Z[l])
-        
-        dW[l] = np.dot(dZ[l], A[l - 1].T) / m + (lbd * W[l]) / m
-        db[l] = np.sum(dZ[l], axis = 1, keepdims = True) / m
-        assert(dZ[l].shape == Z[l].shape)
-        assert(dW[l].shape == W[l].shape)
-        assert(db[l].shape == b[l].shape)
-    return dW, db
-
 import pickle    
 import os
 
@@ -107,7 +52,68 @@ def load_para():
         pickle.dump([W, b], Wfile)
         Wfile.close()
     return W, b
+
+def relu(x):
+    return np.maximum(0, x)
     
+def softmax(x):
+    t = np.exp(x - np.max(x, axis = 0).reshape((1, x.shape[1])))
+    return t / np.sum(t, axis = 0, keepdims = True)
+
+def forward_prop(X, W, b, keep_prob):
+    m = X.shape[1]
+    Z = [None]
+    A = [X]
+    D = [None]
+    for l in range(1, L):
+        Z.append(np.dot(W[l], A[l - 1]) + b[l])
+        if (l == L - 1): A.append(softmax(Z[l]))
+        else: 
+            A.append(relu(Z[l]))  
+            D.append(np.random.randn(A[l].shape[0], A[l].shape[1]) < keep_prob)
+            assert(D[l].shape == A[l].shape)
+            A[l] = A[l] * D[l] / keep_prob
+
+        assert(Z[l].shape == (n[l], m))
+        assert(A[l].shape == Z[l].shape)
+    return Z, A, D
+
+def num_stable_prob(x, epsilon = 1e-18):
+    x = np.maximum(x, epsilon)
+    x = np.minimum(x, 1. - epsilon)
+    return x
+
+def cross_entropy_loss(Yhat, Y, lbd):
+    m = Y.shape[1]
+    assert(m == Yhat.shape[1])
+    num_stable_prob(Yhat)
+    res = -np.squeeze(np.sum(Y * np.log(Yhat))) / m
+    assert(res.shape == ())
+    for l in range(1, L): res += lbd * np.sum(np.square(W[l])) / m / 2.
+    return res
+
+def relu_der(x):
+    return np.int64(x > 0)
+
+def backward_prop(X, Y, W, b, Z, A, D, keep_prob, lbd):
+    dZ = [None] * L
+    dW = [None] * L
+    db = [None] * L
+    m = Y.shape[1]
+    assert(X.shape[1] == m)
+    for l in reversed(range(1, L)):
+        if (l == L - 1): dZ[l] = A[l] - Y
+        else:
+             dA_l = np.dot(W[l + 1].T, dZ[l + 1])
+             dA_l = dA_l * D[l] / keep_prob 
+             dZ[l] = dA_l * relu_der(Z[l])
+        
+        dW[l] = np.dot(dZ[l], A[l - 1].T) / m + (lbd * W[l]) / m
+        db[l] = np.sum(dZ[l], axis = 1, keepdims = True) / m
+        assert(dZ[l].shape == Z[l].shape)
+        assert(dW[l].shape == W[l].shape)
+        assert(db[l].shape == b[l].shape)
+    return dW, db
 
 def split_batches(X, Y, batch_size):
     m = X.shape[1]
@@ -174,7 +180,7 @@ def update_para_momentum(W, b, dW, db, VdW, Vdb, iter_idx, alpha, beta):
         b[l] -= alpha * V_upd 
     return W, b
 
-def gradient_descent(W, b, lbd, n_iters = 1000, batch_size = 2**8, learning_rate = .002, beta1 = .9, beta2 = .999, decay_rate = 1.):
+def gradient_descent(W, b, n_iters = 1000, batch_size = 2**8, keep_prob = 1., lbd = 0., learning_rate = .002, beta1 = .9, beta2 = .999, decay_rate = 1.):
     VdW, Vdb = init_adam()
     SdW, Sdb = init_adam()
     for epoch_num in range(n_iters):
@@ -182,11 +188,11 @@ def gradient_descent(W, b, lbd, n_iters = 1000, batch_size = 2**8, learning_rate
         n_batches = len(batches)
         for batch_idx in range(n_batches):
             X_cur, Y_cur = batches[batch_idx]
-            Z, A = forward_prop(X_cur, W, b)
+            Z, A, D = forward_prop(X_cur, W, b, keep_prob)
             cost = cross_entropy_loss(A[L - 1], Y_cur, lbd)
             iter_idx = epoch_num * n_batches + batch_idx + 1
             print("Cost after " + str(iter_idx) + " iterations: " + str(cost) + '.')
-            dW, db = backward_prop(X_cur, Y_cur, W, b, Z, A, lbd)
+            dW, db = backward_prop(X_cur, Y_cur, W, b, Z, A, D, keep_prob, lbd)
             #update_para(W, b, dW, db, learning_rate)
             #update_para_momentum(W, b, dW, db, VdW, Vdb, epoch_num, learning_rate, beta1)
             cur_learning_rate = learning_rate / math.sqrt(epoch_num + 1) / decay_rate
@@ -204,7 +210,7 @@ def set_performance(X, Y, W, b, batch_size = 2**8):
         X_cur, Y_cur = batches[batch_idx]
         m_cur = X_cur.shape[1]
         assert(m_cur == Y_cur.shape[1])
-        _, A_cur = forward_prop(X_cur, W, b)
+        _, A_cur = forward_prop(X_cur, W, b, 1.)
         pred = np.argmax(A_cur[L - 1], axis = 0).reshape((m_cur, 1))
         label = np.argmax(Y_cur, axis = 0).reshape((m_cur, 1))
         acc += np.sum(pred == label)
@@ -213,7 +219,7 @@ def set_performance(X, Y, W, b, batch_size = 2**8):
 fashion_type = ["T-shirt/top", "Trouser", "Pullover", "Dress", "Coat", "Sandal", "Shirt", "Sneaker", "Bag", "Ankle boot"]
 
 def demo(W, b, idx = np.random.randint(0, m_test - 1), fashion = False):
-    _, A = forward_prop(X_test[:, idx].reshape(n_x, -1), W, b) 
+    Z, A, D = forward_prop(X_test[:, idx].reshape(n_x, -1), W, b, 1.) 
     pred = np.squeeze(np.argmax(A[L - 1]))
     sample = X_test_images[idx]
     plt.imshow(sample)
@@ -224,17 +230,22 @@ def demo(W, b, idx = np.random.randint(0, m_test - 1), fashion = False):
 
 def demo_wrong(W, b, fashion = False):
     while (True):
-        i = np.random.randint(0, m_test - 1)
-        _, A = forward_prop(X_test[:, i].reshape(n_x, -1), W, b) 
+        idx = np.random.randint(0, m_test - 1)
+        Z, A, D = forward_prop(X_test[:, idx].reshape(n_x, -1), W, b, 1.) 
         pred = np.squeeze(np.argmax(A[L - 1]))
-        truth = label_test[i]
+        truth = label_test[idx]
         if (pred != truth):
-            demo(W, b, i, fashion)
+            sample = X_test_images[idx]
+            plt.imshow(sample)
+            if (fashion): plt.suptitle("Prediction label: " + fashion_type[pred] + "  |  Ground truth label: " + fashion_type[label_test[idx]] )  
+            else: plt.suptitle("Prediction label: " + str(pred) + "  |  Ground truth label: " + str(label_test[idx]) )
+            plt.title("Confidence: " + str(np.squeeze(A[L - 1][pred]) * 100.) + "%.")
+            plt.show()
             break
 
 W, b = load_para()
 
-gradient_descent(W, b, lbd = .03, learning_rate=.002)
+gradient_descent(W, b, keep_prob=.7, lbd = .01, learning_rate=.002)
 #print(set_performance(X_train, Y_train, W, b))
 #print(set_performance(X_test, Y_test, W, b))
-#demo(W, b, fashion = True)
+#demo_wrong(W, b, fashion = True)
