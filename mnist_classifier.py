@@ -9,30 +9,29 @@ X_test_images = X_test
 X_train_images = X_train
 #print('Train: X=%s, y=%s' % (X_train.shape, Y_train.shape))
 #print('Test: X=%s, y=%s' % (X_test.shape, Y_test.shape))
-
 m_train = X_train.shape[0]
 m_test = X_test.shape[0]
 n_x = X_train.shape[1] * X_train.shape[2]
-
-X_train = X_train.reshape(X_train.shape[0], -1).T / 255
-X_test = X_test.reshape(X_test.shape[0], -1).T / 255
-
-Y_train = np.zeros((m_train, 10))
-Y_train[np.arange(m_train), label_train] = 1
-Y_train = Y_train.T
-
-Y_test = np.zeros((m_test, 10))
-Y_test[np.arange(m_test), label_test] = 1
-Y_test = Y_test.T
 
 #Network structure
 n_classes = 10
 #n = [n_x, 2500, 2000, 1500, 1000, 500, n_classes]
 #n = [n_x, 800, n_classes]
 n = [n_x, 3000, 2500, 2000, 1500, 1000, 500, n_classes]
-
 L = len(n)
 Wfilename = './Kien/mnist_classifier/fashion_mnist_trained_weights_deep.dat'
+
+def process_data(X, label):
+    m = X.shape[0]
+    assert(m == label.shape[0])
+    X = X.reshape(m, -1).T / 255
+    Y = np.zeros((m, 10))
+    Y[np.arange(m), label] = 1
+    Y = Y.T
+    return X, Y
+
+X_train, Y_train = process_data(X_train, label_train)
+X_test, Y_test = process_data(X_test, label_test)
 
 def relu(x):
     return np.maximum(0, x)
@@ -144,7 +143,7 @@ def update_para(W, b, dW, db, alpha):
         b[l] -= alpha * db[l]  
     return W, b
     
-def update_para_adam(W, b, dW, db, VdW, Vdb, SdW, Sdb, epoch_num, alpha, beta1, beta2, epsilon = 1e-8):
+def update_para_adam(W, b, dW, db, VdW, Vdb, SdW, Sdb, iter_idx, alpha, beta1, beta2, epsilon = 1e-8):
     for l in range(1, L):
         VdW[l] = beta1 * VdW[l] + (1. - beta1) * dW[l]
         Vdb[l] = beta1 * Vdb[l] + (1. - beta1) * db[l]
@@ -152,46 +151,46 @@ def update_para_adam(W, b, dW, db, VdW, Vdb, SdW, Sdb, epoch_num, alpha, beta1, 
         SdW[l] = beta2 * SdW[l] + (1. - beta2) * np.square(dW[l])
         Sdb[l] = beta2 * Sdb[l] + (1. - beta2) * np.square(db[l])
 
-        V_upd = VdW[l] / (1. - beta1 ** epoch_num)
-        S_upd = SdW[l] / (1. - beta2 ** epoch_num)
+        V_upd = VdW[l] / (1. - beta1 ** iter_idx)
+        S_upd = SdW[l] / (1. - beta2 ** iter_idx)
         assert(V_upd.shape == S_upd.shape)
         assert(V_upd.shape == W[l].shape)
         W[l] -= alpha * V_upd / (np.sqrt(S_upd) + epsilon)
 
-        V_upd = Vdb[l] / (1. - beta1 ** epoch_num)
-        S_upd = Sdb[l] / (1. - beta2 ** epoch_num)
+        V_upd = Vdb[l] / (1. - beta1 ** iter_idx)
+        S_upd = Sdb[l] / (1. - beta2 ** iter_idx)
         assert(V_upd.shape == S_upd.shape)
         assert(V_upd.shape == b[l].shape)
         b[l] -= alpha * V_upd / (np.sqrt(S_upd) + epsilon) 
     return W, b
 
-def update_para_momentum(W, b, dW, db, VdW, Vdb, epoch_num, alpha, beta):
+def update_para_momentum(W, b, dW, db, VdW, Vdb, iter_idx, alpha, beta):
     for l in range(1, L):
         VdW[l] = beta * VdW[l] + (1. - beta) * dW[l]
         Vdb[l] = beta * Vdb[l] + (1. - beta) * db[l]
-        V_upd = VdW[l] / (1. - beta ** epoch_num)
+        V_upd = VdW[l] / (1. - beta ** iter_idx)
         W[l] -= alpha * V_upd 
-        V_upd = Vdb[l] / (1. - beta ** epoch_num)
+        V_upd = Vdb[l] / (1. - beta ** iter_idx)
         b[l] -= alpha * V_upd 
     return W, b
 
 def gradient_descent(W, b, lbd, n_iters = 1000, batch_size = 2**8, learning_rate = .002, beta1 = .9, beta2 = .999, decay_rate = 1.):
     VdW, Vdb = init_adam()
     SdW, Sdb = init_adam()
-    for iter_idx in range(n_iters):
+    for epoch_num in range(n_iters):
         batches = split_batches(X_train, Y_train, batch_size)
         n_batches = len(batches)
         for batch_idx in range(n_batches):
             X_cur, Y_cur = batches[batch_idx]
             Z, A = forward_prop(X_cur, W, b)
             cost = cross_entropy_loss(A[L - 1], Y_cur, lbd)
-            epoch_num = iter_idx * n_batches + batch_idx + 1
-            print("Cost after " + str(epoch_num) + " iterations: " + str(cost) + '.')
+            iter_idx = epoch_num * n_batches + batch_idx + 1
+            print("Cost after " + str(iter_idx) + " iterations: " + str(cost) + '.')
             dW, db = backward_prop(X_cur, Y_cur, W, b, Z, A, lbd)
             #update_para(W, b, dW, db, learning_rate)
             #update_para_momentum(W, b, dW, db, VdW, Vdb, epoch_num, learning_rate, beta1)
-            cur_learning_rate = learning_rate * decay_rate /math.sqrt(epoch_num)
-            update_para_adam(W, b, dW, db, VdW, Vdb, SdW, Sdb, epoch_num, cur_learning_rate, beta1, beta2)
+            cur_learning_rate = learning_rate / math.sqrt(epoch_num + 1) / decay_rate
+            update_para_adam(W, b, dW, db, VdW, Vdb, SdW, Sdb, iter_idx, cur_learning_rate, beta1, beta2)
             Wfile = open(Wfilename, 'wb')
             pickle.dump([W, b], Wfile)
             Wfile.close()
@@ -235,7 +234,7 @@ def demo_wrong(W, b, fashion = False):
 
 W, b = load_para()
 
-gradient_descent(W, b, lbd = .04, learning_rate=.002)
+gradient_descent(W, b, lbd = .03, learning_rate=.002)
 #print(set_performance(X_train, Y_train, W, b))
 #print(set_performance(X_test, Y_test, W, b))
 #demo(W, b, fashion = True)
