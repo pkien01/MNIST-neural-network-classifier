@@ -8,7 +8,7 @@ Test set error on MNIST handwritten digits: 98%
 Download the source code file and run "gradient_descent" to train and "demo" to test on a random image in the test set
 
 To verify the performance of the algorithm:
-print(set_performance(X_train, Y_train, W, b))
+print(set_performance(X_train, Y_train, W, b));
 print(set_performance(X_test, Y_test, W, b))
 
 To change the saved weights file path, modify the following variable to your own desired path:
