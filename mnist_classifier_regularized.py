@@ -52,7 +52,7 @@ def forward_prop(X, W, b, keep_prob):
         if (l == L - 1): A.append(softmax(Z[l]))
         else: 
             A.append(relu(Z[l]))  
-            D.append(np.random.randn(A[l].shape[0], A[l].shape[1]) < keep_prob)
+            D.append(np.random.rand(A[l].shape[0], A[l].shape[1]) < keep_prob)
             assert(D[l].shape == A[l].shape)
             A[l] = A[l] * D[l] / keep_prob
 
@@ -245,7 +245,7 @@ def load_cache():
 
 W, b = load_cache()
 
-gradient_descent(W, b, keep_prob=.7, lbd = .01, learning_rate=.002)
+gradient_descent(W, b, keep_prob=.7, learning_rate=.002)
 #print(set_performance(X_train, Y_train, W, b))
 #print(set_performance(X_test, Y_test, W, b))
-#demo_wrong(W, b, fashion = True)
+#demo(W, b, fashion = True)
