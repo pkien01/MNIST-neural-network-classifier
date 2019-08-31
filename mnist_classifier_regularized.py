@@ -5,7 +5,7 @@ import math
 import pickle    
 import os
 
-(X_train, label_train), (X_test, label_test) = tf.keras.datasets.fashion_mnist.load_data()
+(X_train, label_train), (X_test, label_test) = tf.keras.datasets.mnist.load_data()
 
 X_test_images = X_test
 X_train_images = X_train
@@ -21,7 +21,7 @@ n_classes = 10
 #n = [n_x, 800, n_classes]
 n = [n_x, 3000, 2500, 2000, 1500, 1000, 500, n_classes]
 L = len(n)
-weights_file = './Kien/mnist_classifier/fashion_mnist_trained_weights_deep.dat'
+weights_file = './Kien/mnist_classifier/mnist_trained_weights_deep.dat'
 
 def process_data(X, label):
     m = X.shape[0]
@@ -226,6 +226,16 @@ def demo_wrong(W, b, fashion = False):
             plt.show()
             break
 
+layers_shape = [(28, 28), (60, 50), (50, 50), (50, 40), (50, 30), (40, 25), (25, 20), (10, 1)]
+def demo_all_layers(W, b, idx = np.random.randint(0, m_test - 1)):
+    Z, A, D = forward_prop(X_test[:, idx].reshape(n_x, -1), W, b, 1.) 
+    fig = plt.figure()
+    for l in range(0, L):
+        cur_plot = fig.add_subplot(1, L, l+1)
+        cur_plot.set_title("Layer " + str(l))
+        plt.imshow(A[l].reshape(layers_shape[l]))
+    plt.show()
+
 def load_cache():
     file_exists = os.path.isfile(weights_file)
     if (file_exists):
@@ -234,7 +244,7 @@ def load_cache():
         Wfile.close()
     else:
         W = [None]
-        b = [None]
+        b = [None]  
         for l in range(1, L):
             W.append(np.random.randn(n[l], n[l - 1]) * np.sqrt(2. / n[l - 1]))
             b.append(np.zeros((n[l], 1)))
@@ -245,7 +255,9 @@ def load_cache():
 
 W, b = load_cache()
 
-gradient_descent(W, b, keep_prob=.7, learning_rate=.002)
+#gradient_descent(W, b, keep_prob=.7, lbd =.03, learning_rate=0.002)
 #print(set_performance(X_train, Y_train, W, b))
 #print(set_performance(X_test, Y_test, W, b))
-#demo(W, b, fashion = True)
+demo(W, b)
+
+#demo_all_layers(W, b)
