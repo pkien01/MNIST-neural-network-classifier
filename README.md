@@ -160,17 +160,17 @@ You can train it for a longer period,  and/or adjust the hyperparameters, to get
 
 Here are the results on some example images on the handwritten digits dataset:
 
-![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/tree/master/sample_images/3.png)
-![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/tree/master/sample_images/4.png)
-![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/tree/master/sample_images/9.png)
-![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/tree/master/sample_images/0_wrong.png)
+![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/3.png)
+![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/4.png)
+![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/9.png)
+![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/0_wrong.png)
 
 And here are some on the fashion dataset:
-![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/tree/master/sample_images/shirt.png)
-![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/tree/master/sample_images/trouser.png)
-![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/tree/master/sample_images/ankle_boot.png)
-![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/tree/master/sample_images/bag_wrong.png)
+![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/shirt.png)
+![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/trouser.png)
+![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/ankle_boot.png)
+![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/bag_wrong.png)
 
 Finally, here are the visualizations of all the layers' activations:
-![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/tree/master/sample_images/all_layers.png)
-![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/tree/master/sample_images/all_layers_fashion.png)
+![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/all_layers.png)
+![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/all_layers_fashion.png)
