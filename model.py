@@ -176,10 +176,10 @@ def gradient_descent(W, b, n_epochs = 2000, batch_size = 2**8, keep_prob = 1., l
             iter_idx = epoch_num * n_batches + batch_idx + 1
             print("Cost after " + str(iter_idx) + " iterations: " + str(cost) + '.')
             dW, db = backward_prop(X_cur, Y_cur, W, b, Z, A, D, keep_prob, lbd)
-            #update_para(W, b, dW, db, learning_rate)
-            #update_para_momentum(W, b, dW, db, VdW, Vdb, epoch_num, learning_rate, beta1)
             cur_learning_rate = learning_rate / math.sqrt(epoch_num + 1) / decay_rate
             update_para_adam(W, b, dW, db, VdW, Vdb, SdW, Sdb, iter_idx, cur_learning_rate, beta1, beta2)
+            #update_para(W, b, dW, db, learning_rate)
+            #update_para_momentum(W, b, dW, db, VdW, Vdb, epoch_num, learning_rate, beta1)
             Wfile = open(weights_file, 'wb')
             pickle.dump([W, b], Wfile)
             Wfile.close()
