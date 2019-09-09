@@ -166,12 +166,12 @@ You can train it for a longer period,  and/or adjust the hyperparameters, to get
 Here are the results on some example images on the handwritten digits dataset:
 
 <p align="middle">
-	<img src="https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/3.png" style="zoom:60%;" /> 
-	<img src="https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/4.png" style="zoom:60%;" /> 
+	<img src="https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/3.png" style="zoom:60%" /> 
+	<img src="https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/4.png" style="zoom:60%" /> 
 </p>
 <p align="middle">
-	<img src="https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/9.png" style="zoom:60%;" /> 
-	<img src="https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/0_wrong.png" style="zoom:60%;" />
+	<img src="https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/9.png" style="zoom:60%" /> 
+	<img src="https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/0_wrong.png" style="zoom:60%" />
 </p>	
 
 And here are some on the fashion dataset:
@@ -182,8 +182,8 @@ And here are some on the fashion dataset:
 		<img src="https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/trouser.png" style="zoom:60%" />
 	</div>
 	<div class="column">
-		<img src="https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/ankle_boot.png" style="zoom:60%;" />
-		<img src="https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/bag_wrong.png" style="zoom:60%;" />
+		<img src="https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/ankle_boot.png" style="zoom:60%" />
+		<img src="https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/bag_wrong.png" style="zoom:60%" />
 	</div>
 </div>
 
