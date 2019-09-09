@@ -134,7 +134,11 @@ Default hyperparameters settings:
 
   9. To visualize each of the individual layers' activations, uncomment the function `demo_all_layers(W, b)` and comment the rest function calls. Repeat step 5 to run the source code.
 
-  10. To re-train it from the trained weights, uncomment the function `gradient_descent(W, b, keep_prob=.7, lbd =.03, learning_rate=0.001)` and comment the rest function calls. You can use your own set of hyperparameters to train the neural network or tune it yourself if you want. If you want to train from scratch, delete the weights file first before training (though it may take quite a long time to train): `mnist_trained_weights_deep.dat` for the MNIST handwritten digits dataset and `fashion_mnist_trained_weights_deep.dat` for the MNIST fashion dataset. You can also train it using a different algorithm like standard gradient descent or gradient descent with momentum, instead of Adam, by modifying the initialization and parameters update function calls in the `gradient descent()` function. 
+  10. To re-train it from the trained weights, uncomment the function `gradient_descent(W, b, keep_prob=.7, lbd =.03, learning_rate=0.001)` and comment the rest function calls. You can use your own set of hyperparameters to train the neural network or tune it yourself if you want. 
+
+      If you want to train from scratch, delete the weights file first before training (though it may take quite a long time to train): `mnist_trained_weights_deep.dat` for the MNIST handwritten digits dataset and `fashion_mnist_trained_weights_deep.dat` for the MNIST fashion dataset. 
+
+      You can also train it using a different algorithm like standard gradient descent or gradient descent with momentum, instead of Adam, by modifying the initialization and parameters update function calls in the `gradient descent()` function. For example, the update function of standard gradient descent is `update_para(W, b, dW, db, learning_rate)` and gradient descent with momentum is `update_para_momentum(W, b, dW, db, VdW, Vdb, epoch_num, learning_rate, beta1)`. 
 
 
 
@@ -152,4 +156,21 @@ Default hyperparameters settings:
 
   Test set accuracy: 89.24%.
 
-You can train it for a longer period, or adjust the hyperparameters, to get better performance.
+You can train it for a longer period,  and/or adjust the hyperparameters, to get better performance.
+
+Here are the results on some example images on the handwritten digits dataset:
+
+![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/tree/master/sample_images/3.png)
+![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/tree/master/sample_images/4.png)
+![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/tree/master/sample_images/9.png)
+![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/tree/master/sample_images/0_wrong.png)
+
+And here are some on the fashion dataset:
+![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/tree/master/sample_images/shirt.png)
+![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/tree/master/sample_images/trouser.png)
+![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/tree/master/sample_images/ankle_boot.png)
+![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/tree/master/sample_images/bag_wrong.png)
+
+Finally, here are the visualizations of all the layers' activations:
+![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/tree/master/sample_images/all_layers.png)
+![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/tree/master/sample_images/all_layers_fashion.png)
