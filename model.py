@@ -255,9 +255,9 @@ def load_cache():
 
 W, b = load_cache()
 
-gradient_descent(W, b, keep_prob=.7, lbd =.03, learning_rate=0.001)
+#gradient_descent(W, b, keep_prob=.7, lbd =.03, learning_rate=0.001)
 #print(set_performance(X_train, Y_train, W, b))
 #print(set_performance(X_test, Y_test, W, b))
-#demo(W, b, fashion=False)
+demo(W, b, fashion=False)
 #demo_wrong(W, b, fashion=False)
 #demo_all_layers(W, b)
