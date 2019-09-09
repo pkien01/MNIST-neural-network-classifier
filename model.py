@@ -205,7 +205,7 @@ def demo(W, b, idx = np.random.randint(0, m_test - 1), fashion = False):
     Z, A, D = forward_prop(X_test[:, idx].reshape(n_x, -1), W, b, 1.) 
     pred = np.squeeze(np.argmax(A[L - 1]))
     sample = X_test_images[idx]
-    plt.imshow(sample, cmap=plt.cm.binary)
+    plt.imshow(sample)
     if (fashion): plt.suptitle("Prediction label: " + fashion_type[pred] + "  |  Ground truth label: " + fashion_type[label_test[idx]] )  
     else: plt.suptitle("Prediction label: " + str(pred) + "  |  Ground truth label: " + str(label_test[idx]) )
     plt.title("Confidence: " + str(np.squeeze(A[L - 1][pred]) * 100.) + "%.")
