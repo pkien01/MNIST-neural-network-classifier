@@ -38,6 +38,8 @@ Default hyperparameters settings:
 
 ## Installation, demo, and training
 
+**Prerequisites**: Make sure you've installed the required libraries/packages: Numpy, Tensorflow (only used to get the dataset), and Matplotlib
+
 1. Clone this repository 
 
    ```shell
@@ -105,22 +107,22 @@ Default hyperparameters settings:
      ```python
      weights_file = './MNIST-neural-network-classifier/fashion_mnist_trained_weights_deep.dat'
      ```
-   
+
    * Next, set the `fashion` variable to `True`  in the `demo` function
-   
+
      ```python
      demo(W, b, fashion=False)
      #demo_wrong(W, b, fashion=False)
      ```
-   
+
      to this
-   
+
      ```python
      demo(W, b, fashion=True)
      #demo_wrong(W, b, fashion=True)
      ```
    * Repeat step 5 to run the source code file
-   
+
   7. To demo on incorrectly labeled images, uncomment the line `demo_wrong(W, b, fashion=False)` and comment all the other function calls (of course, the `fashion`variable can be set `True` or `False` depending if you want to demo on the fashion or the handwritten digits images). Then, repeat step 5 to run the source code.
 
   8. To verify the model performance on train and test set, respectively, uncomment the following lines (and comment all the other function calls).  
@@ -155,8 +157,11 @@ Default hyperparameters settings:
   Training set accuracy: 99.39%.
 
   Test set accuracy: 89.24%.
+  
 
 You can train it for a longer period,  and/or adjust the hyperparameters, to get better performance.
+
+
 
 Here are the results on some example images on the handwritten digits dataset:
 
@@ -171,6 +176,8 @@ And here are some on the fashion dataset:
 ![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/ankle_boot.png)
 ![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/bag_wrong.png)
 
-Finally, here are the visualizations of all the layers' activations:
+Finally, here are the visualizations of all the layers' activations (looks pretty random, huh?):
 ![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/all_layers.png)
 ![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/all_layers_fashion.png)
+
+Have fun playing around with the model as you like. Good luck!
