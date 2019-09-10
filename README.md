@@ -191,4 +191,10 @@ Finally, here are the visualizations of all the layers' activations (looks prett
 ![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/all_layers.png)
 ![](https://raw.githubusercontent.com/pkien01/MNIST-neural-network-classifier/master/sample_images/all_layers_fashion.png)
 
-Have fun playing around with the model as you like. Good luck!
+Have fun playing around with the model as you like.
+
+
+
+## Contacts
+
+If you have any questions or encounter some serious errors/bugs in the code, you can write an email to phamkienxmas2001@gmail.com, v.kienp16@vinai.io, or kindly leave a message below on GitHub. Thank you!
