@@ -99,13 +99,13 @@ Default hyperparameters settings:
    - Next, change the following line (line 24 in the default source code)
 
      ```python
-     weights_file = './MNIST-neural-network-classifier/mnist_trained_weights_deep.dat'
+     weights_file = './mnist_trained_weights_deep.dat'
      ```
 
      to this
 
      ```python
-     weights_file = './MNIST-neural-network-classifier/fashion_mnist_trained_weights_deep.dat'
+     weights_file = './fashion_mnist_trained_weights_deep.dat'
      ```
 
    * Next, set the `fashion` variable to `True`  in the `demo` function
@@ -138,7 +138,7 @@ Default hyperparameters settings:
 
   10. To re-train it from the trained weights, uncomment the function `gradient_descent(W, b, keep_prob=.7, lbd =.03, learning_rate=0.001)` and comment the rest function calls. You can use your own set of hyperparameters to train the neural network or tune it yourself if you want. 
 
-      If you want to train from scratch, delete the weights file first before training (though it may take quite a long time to train): `mnist_trained_weights_deep.dat` for the MNIST handwritten digits dataset and `fashion_mnist_trained_weights_deep.dat` for the MNIST fashion dataset. 
+      If you want to train from scratch, delete the weights file first before training (though it may take quite a long time to train): `mnist_trained_weights_deep.dat` for the MNIST handwritten digits dataset or `fashion_mnist_trained_weights_deep.dat` for the MNIST fashion dataset. 
 
       You can also train it using a different algorithm like standard gradient descent or gradient descent with momentum, instead of Adam, by modifying the initialization and parameters update function calls in the `gradient descent()` function. For example, the update function of standard gradient descent is `update_para(W, b, dW, db, learning_rate)` and gradient descent with momentum is `update_para_momentum(W, b, dW, db, VdW, Vdb, epoch_num, learning_rate, beta1)`. 
 
