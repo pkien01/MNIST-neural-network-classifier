@@ -21,7 +21,7 @@ n_classes = 10
 #n = [n_x, 800, n_classes]
 n = [n_x, 3000, 2500, 2000, 1500, 1000, 500, n_classes]
 L = len(n)
-weights_file = './MNIST-neural-network-classifier/mnist_trained_weights_deep.dat'
+weights_file = './mnist_trained_weights_deep.dat'
 
 def process_data(X, label):
     m = X.shape[0]
